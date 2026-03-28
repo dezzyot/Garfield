@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 13" role="img" aria-label="European Union flag">
+  <rect width="19" height="13" rx="2" fill="#003399"/>
+  <g fill="#ffcc00">
+    <circle cx="9.5" cy="2.2" r=".45"/>
+    <circle cx="11.65" cy="2.78" r=".45"/>
+    <circle cx="13.22" cy="4.35" r=".45"/>
+    <circle cx="13.8" cy="6.5" r=".45"/>
+    <circle cx="13.22" cy="8.65" r=".45"/>
+    <circle cx="11.65" cy="10.22" r=".45"/>
+    <circle cx="9.5" cy="10.8" r=".45"/>
+    <circle cx="7.35" cy="10.22" r=".45"/>
+    <circle cx="5.78" cy="8.65" r=".45"/>
+    <circle cx="5.2" cy="6.5" r=".45"/>
+    <circle cx="5.78" cy="4.35" r=".45"/>
+    <circle cx="7.35" cy="2.78" r=".45"/>
+  </g>
+</svg>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccountHub Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="bolt.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-live-page="support">
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="background-glow" aria-hidden="true"></div>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="navbar">
+        <a class="brand" href="index.html#products">
+          <img class="brand-mark" src="bolt.svg" alt="Vault Market logo">
+          AccountHub
+        </a>
+        <button class="navbar-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button" aria-expanded="false">Products</button>
+            <div class="dropdown-menu">
+              <a href="index.html#processor">Payment Processors</a>
+              <a href="index.html#bank">Bank Accounts</a>
+              <a href="index.html#crypto">Cryptocurrency Accounts</a>
+            </div>
+          </div>
+          <a href="support.html">Support</a>
+          <a href="reviews.html">Reviews</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content" id="home">
+      <section class="intro page-intro">
+        <div class="intro-head">
+          <p class="eyebrow">Support</p>
+          <h2>Need help with an order or account?</h2>
+        </div>
+        <p class="intro-text">
+          Send a message below for delivery questions, account issues, or general support. Keep the message short and include your order details.
+        </p>
+      </section>
+
+      <section class="support-layout">
+        <article class="support-card support-chat-card">
+          <div class="chat-header">
+            <div class="chat-agent">
+              <img class="chat-avatar chat-avatar-image" src="support-agent.svg" alt="Support agent">
+              <div>
+                <strong>Support</strong>
+                <p class="chat-status"><span class="chat-status-dot" aria-hidden="true"></span>Online now</p>
+              </div>
+            </div>
+            <span class="chat-pill">Live Support</span>
+          </div>
+
+          <div class="chat-feed" id="support-chat-feed"></div>
+
+          <form class="support-form support-chat-form">
+            <div class="support-mini-grid">
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" placeholder="Your name" required>
+              </label>
+              <label>
+                <span>Topic</span>
+                <select name="topic" required>
+                  <option value="">Choose topic</option>
+                  <option value="Order Help">Order Help</option>
+                  <option value="Delivery Issue">Delivery Issue</option>
+                  <option value="Account Access">Account Access</option>
+                  <option value="Refund Request">Refund Request</option>
+                  <option value="General Question">General Question</option>
+                </select>
+              </label>
+              <label class="support-order-field">
+                <span>Order ID</span>
+                <input type="text" name="order_id" placeholder="Optional">
+              </label>
+            </div>
+
+            <label class="support-message-field">
+              <span>Message</span>
+              <textarea name="message" rows="6" placeholder="Type your support message here..." required></textarea>
+            </label>
+
+            <label class="support-honeypot" aria-hidden="true">
+              <span>Website</span>
+              <input type="text" name="website" tabindex="-1" autocomplete="off">
+            </label>
+
+            <div class="chat-compose-row">
+              <p class="support-status" role="status" aria-live="polite"></p>
+              <button class="support-button" type="submit">Send Message</button>
+            </div>
+          </form>
+        </article>
+
+        <aside class="support-card support-side">
+          <div class="section-label">
+            <h3>Quick Guide</h3>
+          </div>
+          <p class="support-note">Choose the topic that matches what you want to chat about.</p>
+          <p class="support-note">If the issue is about access, include the product name and when you ordered.</p>
+          <p class="support-note">For faster handling, describe the problem in one message instead of sending multiple short ones.</p>
+          <p class="support-note">One open ticket is allowed per person until that ticket is resolved.</p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2024-2026 AccountHub</p>
+      <a href="reviews.html">View Reviews</a>
+    </footer>
+  </div>
+  <script>
+    const SUPPORT_API_URL = "http://127.0.0.1:8080/api/support";
+    const SUPPORT_MESSAGE_API_URL = "http://127.0.0.1:8080/api/support/message";
+    const SUPPORT_THREAD_API_URL = "http://127.0.0.1:8080/api/support/thread";
+    const SUPPORT_TICKET_STORAGE_KEY = "supportTicketId";
+    const SUPPORT_META_STORAGE_KEY = "supportTicketMeta";
+    const SUPPORT_POLL_INTERVAL_MS = 8000;
+    const root = document.documentElement;
+    const updatePointerGlow = (event) => {
+      root.style.setProperty("--mouse-x", `${event.clientX}px`);
+      root.style.setProperty("--mouse-y", `${event.clientY}px`);
+    };
+
+    if (window.matchMedia("(pointer: fine)").matches) {
+      window.addEventListener("mousemove", updatePointerGlow);
+      updatePointerGlow({
+        clientX: window.innerWidth / 2,
+        clientY: window.innerHeight / 3
+      });
+    }
+
+    const navbar = document.querySelector(".navbar");
+    const navToggle = document.querySelector(".navbar-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const dropdown = document.querySelector(".nav-dropdown");
+    const dropdownTrigger = document.querySelector(".nav-dropdown-trigger");
+    function closeMobileNav() {
+      if (!navbar || !navToggle) return;
+      navbar.classList.remove("nav-mobile-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+
+    if (navToggle && navbar) {
+      navToggle.addEventListener("click", () => {
+        const isOpen = navbar.classList.toggle("nav-mobile-open");
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    if (dropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener("click", () => {
+        const isOpen = dropdown.classList.toggle("is-open");
+        dropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("is-open");
+          dropdownTrigger.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    if (navLinks) {
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          closeMobileNav();
+        });
+      });
+    }
+
+    const form = document.querySelector(".support-form");
+    const statusNode = document.querySelector(".support-status");
+    const chatFeed = document.getElementById("support-chat-feed");
+    let currentTicketId = localStorage.getItem(SUPPORT_TICKET_STORAGE_KEY) || "";
+    let supportPollHandle = null;
+
+    function getBrowserFingerprint() {
+      const parts = [
+        navigator.userAgent,
+        navigator.language,
+        navigator.platform,
+        screen.width,
+        screen.height,
+        window.devicePixelRatio,
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      ];
+
+      return btoa(parts.join("|")).replace(/=+$/, "");
+    }
+
+    function setStatus(message, mode = "") {
+      statusNode.textContent = message;
+      statusNode.dataset.state = mode;
+    }
+
+    function formatMessageTime(isoValue) {
+      if (!isoValue) return "";
+      const parsed = new Date(isoValue);
+      if (Number.isNaN(parsed.getTime())) return "";
+      return parsed.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function renderDefaultFeed() {
+      if (!chatFeed) return;
+      chatFeed.innerHTML = `
+        <div class="chat-empty-state">
+          <div>
+            <strong>Support messages will appear here</strong>
+            <p>Send one clear message below and wait for our support team to respond.<br>Keep in mind that we respond to our customers with order ID's first.<br><br><small>Current waiting time: 5-10 minutes</small></p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTicket(ticket) {
+      if (!chatFeed) return;
+      if (!ticket || !Array.isArray(ticket.messages) || !ticket.messages.length) {
+        renderDefaultFeed();
+        return;
+      }
+
+      chatFeed.innerHTML = "";
+      ticket.messages.forEach((message) => {
+        const bubble = document.createElement("div");
+        bubble.className = `chat-bubble ${message.sender === "agent" ? "chat-bubble-agent" : "chat-bubble-user"}`;
+        const text = document.createElement("p");
+        text.textContent = message.body || "";
+        bubble.appendChild(text);
+        const time = document.createElement("span");
+        time.className = "chat-bubble-time";
+        time.textContent = formatMessageTime(message.createdAt);
+        bubble.appendChild(time);
+        chatFeed.appendChild(bubble);
+      });
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    function saveTicketMeta(formData) {
+      localStorage.setItem(SUPPORT_META_STORAGE_KEY, JSON.stringify({
+        name: formData.get("name") || "",
+        topic: formData.get("topic") || "",
+        orderId: formData.get("order_id") || ""
+      }));
+    }
+
+    function restoreTicketMeta() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SUPPORT_META_STORAGE_KEY) || "{}");
+        if (!form || !saved) return;
+        if (saved.name) form.elements.name.value = saved.name;
+        if (saved.topic) form.elements.topic.value = saved.topic;
+        if (saved.orderId) form.elements.order_id.value = saved.orderId;
+      } catch {
+      }
+    }
+
+    async function loadThread() {
+      if (!currentTicketId) {
+        renderDefaultFeed();
+        return;
+      }
+
+      try {
+        const url = `${SUPPORT_THREAD_API_URL}?ticketId=${encodeURIComponent(currentTicketId)}&fingerprint=${encodeURIComponent(getBrowserFingerprint())}`;
+        const response = await fetch(url, { method: "GET" });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Could not load support thread.");
+        }
+
+        renderTicket(result.ticket);
+        if (result.ticket?.status === "resolved") {
+          setStatus("This ticket was resolved. You can open a new one if needed.", "success");
+          localStorage.removeItem(SUPPORT_TICKET_STORAGE_KEY);
+          currentTicketId = "";
+        }
+      } catch {
+        renderDefaultFeed();
+      }
+    }
+
+    restoreTicketMeta();
+    renderDefaultFeed();
+    loadThread();
+
+    if (currentTicketId && !supportPollHandle) {
+      supportPollHandle = window.setInterval(loadThread, SUPPORT_POLL_INTERVAL_MS);
+    }
+
+    if (form) {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = form.querySelector(".support-button");
+        const formData = new FormData(form);
+        const payload = {
+          fingerprint: getBrowserFingerprint(),
+          browserName: navigator.userAgent,
+          platform: navigator.platform
+        };
+
+        submitButton.disabled = true;
+        setStatus("Sending...", "pending");
+
+        try {
+          const isExistingTicket = Boolean(currentTicketId);
+          const requestUrl = isExistingTicket ? SUPPORT_MESSAGE_API_URL : SUPPORT_API_URL;
+          const requestBody = isExistingTicket ? {
+            ...payload,
+            ticketId: currentTicketId,
+            message: formData.get("message")
+          } : {
+            ...payload,
+            name: formData.get("name"),
+            topic: formData.get("topic"),
+            orderId: formData.get("order_id"),
+            message: formData.get("message"),
+            website: formData.get("website")
+          };
+
+          const response = await fetch(requestUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error || "Support request failed.");
+          }
+
+          if (!isExistingTicket && result.ticketId) {
+            currentTicketId = result.ticketId;
+            localStorage.setItem(SUPPORT_TICKET_STORAGE_KEY, currentTicketId);
+            saveTicketMeta(formData);
+            if (!supportPollHandle) {
+              supportPollHandle = window.setInterval(loadThread, SUPPORT_POLL_INTERVAL_MS);
+            }
+          }
+
+          form.elements.message.value = "";
+          renderTicket(result.ticket);
+          setStatus(`Message sent. Your ticket ID: ${currentTicketId || result.ticketId}`, "success");
+        } catch (error) {
+          setStatus(error.message || "Could not send support request.", "error");
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+    }
+  </script>
+  <script src="live-tracker.js"></script>
+</body>
+</html>

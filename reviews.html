@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccountHub Reviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="bolt.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-live-page="reviews">
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="background-glow" aria-hidden="true"></div>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="navbar">
+        <a class="brand" href="index.html#products">
+          <img class="brand-mark" src="bolt.svg" alt="Vault Market logo">
+          AccountHub
+        </a>
+        <button class="navbar-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button" aria-expanded="false">Products</button>
+            <div class="dropdown-menu">
+              <a href="index.html#processor">Payment Processors</a>
+              <a href="index.html#bank">Bank Accounts</a>
+              <a href="index.html#crypto">Cryptocurrency Accounts</a>
+            </div>
+          </div>
+          <a href="support.html">Support</a>
+          <a href="reviews.html">Reviews</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content" id="home">
+      <section class="intro page-intro">
+        <div class="intro-head">
+          <p class="eyebrow">Reviews</p>
+          <h2>Our customers reviews.</h2>
+        </div>
+        <p class="intro-text">
+          Leave a review after your purchase and get 30% discount on your next order.<br><a href="#review-message" class="review-inline-link">Leave your review HERE</a>
+        </p>
+      </section>
+
+      <section class="review-summary" aria-label="Average review rating">
+        <article class="review-summary-card">
+          <div class="review-summary-main">
+            <p class="review-summary-label">Average rating</p>
+            <div class="review-summary-score-row">
+              <strong class="review-summary-score" id="review-average-score">0.0</strong>
+              <div>
+                <div class="review-summary-stars" id="review-average-stars" aria-label="Average review stars"></div>
+                <p class="review-summary-meta" id="review-average-meta">Based on 0 reviews</p>
+              </div>
+            </div>
+          </div>
+          <div class="review-summary-breakdown" id="review-summary-breakdown" aria-label="Rating breakdown"></div>
+        </article>
+      </section>
+
+      <section class="review-grid" id="review-grid"></section>
+      <div class="review-pagination" id="review-pagination" aria-label="Reviews pagination"></div>
+
+      <section class="review-cta">
+        <article class="review-cta-card">
+          <div class="review-cta-copy">
+            <p class="eyebrow">Review Reward</p>
+            <h3>Leave a review and get 30% discount on your next order.</h3>
+            <p>Enter your order number and the email used for delivery.<br>After leaving a review, you will receive a discount code via email.<br><br>With much love - AccountHub</p>
+          </div>
+          <form class="review-cta-form" id="review-cta-form">
+            <label>
+              <span>Order number</span>
+              <input type="text" name="order_number" placeholder="#A1B2C3" required>
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" name="email" placeholder="you@example.com" required>
+            </label>
+            <div class="review-rating-field">
+              <span>Your rating</span>
+              <div class="review-rating-picker" id="review-rating-picker" role="radiogroup" aria-label="Choose a star rating">
+                <button class="review-rating-star" type="button" data-rating="1" aria-label="1 star">★</button>
+                <button class="review-rating-star" type="button" data-rating="2" aria-label="2 stars">★</button>
+                <button class="review-rating-star" type="button" data-rating="3" aria-label="3 stars">★</button>
+                <button class="review-rating-star" type="button" data-rating="4" aria-label="4 stars">★</button>
+                <button class="review-rating-star" type="button" data-rating="5" aria-label="5 stars">★</button>
+              </div>
+              <input id="review-rating-input" name="rating" type="hidden" required>
+            </div>
+            <label>
+              <span>Your review</span>
+              <textarea id="review-message" name="review" rows="4" placeholder="Write your review here..." required></textarea>
+            </label>
+            <div class="review-cta-row">
+              <p class="review-cta-status" id="review-cta-status" role="status" aria-live="polite"></p>
+              <button class="support-button" type="submit">Submit</button>
+            </div>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2024-2026 AccountHub</p>
+      <a href="support.html">Support Center</a>
+    </footer>
+  </div>
+  <script>
+    const root = document.documentElement;
+    const updatePointerGlow = (event) => {
+      root.style.setProperty("--mouse-x", `${event.clientX}px`);
+      root.style.setProperty("--mouse-y", `${event.clientY}px`);
+    };
+
+    if (window.matchMedia("(pointer: fine)").matches) {
+      window.addEventListener("mousemove", updatePointerGlow);
+      updatePointerGlow({
+        clientX: window.innerWidth / 2,
+        clientY: window.innerHeight / 3
+      });
+    }
+
+    const navbar = document.querySelector(".navbar");
+    const navToggle = document.querySelector(".navbar-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const dropdown = document.querySelector(".nav-dropdown");
+    const dropdownTrigger = document.querySelector(".nav-dropdown-trigger");
+    function closeMobileNav() {
+      if (!navbar || !navToggle) return;
+      navbar.classList.remove("nav-mobile-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+
+    if (navToggle && navbar) {
+      navToggle.addEventListener("click", () => {
+        const isOpen = navbar.classList.toggle("nav-mobile-open");
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    if (dropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener("click", () => {
+        const isOpen = dropdown.classList.toggle("is-open");
+        dropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("is-open");
+          dropdownTrigger.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    if (navLinks) {
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          closeMobileNav();
+        });
+      });
+    }
+
+    const reviewForm = document.getElementById("review-cta-form");
+    const reviewStatus = document.getElementById("review-cta-status");
+    const reviewGrid = document.getElementById("review-grid");
+    const reviewPagination = document.getElementById("review-pagination");
+    const reviewAverageScore = document.getElementById("review-average-score");
+    const reviewAverageStars = document.getElementById("review-average-stars");
+    const reviewAverageMeta = document.getElementById("review-average-meta");
+    const reviewSummaryBreakdown = document.getElementById("review-summary-breakdown");
+    const reviewRatingPicker = document.getElementById("review-rating-picker");
+    const reviewRatingInput = document.getElementById("review-rating-input");
+    const REVIEWS_PER_PAGE = 6;
+    const reviewBlueprints = [
+  { productLine: "Stripe | Payment Processors", count: 27, entries: [["JayBand","Came in like 5 mins to email was in spam tho lol",5],["Kayla","Really smooth Support answered fast and I got it right after",5],["Mason","Old stripe usa landed fast proper service tbh",5],["Renz","fresh one no drama",5],["Ellis","Email was in spam folder after that everything was bless",5],["Gav","Got mine quick Found it in spam lol",5],["Ceej","Aged one was clean no stories",5],["Amy","Good from first login mail hit spam tho",5],["Samir","Support stayed around after too Rare tbh",5],["Nia","Got answers fast before I paid",5],["Dre","5 mins and done",5],["Ollie","Proper quick delivery support was sound",5],["Ben","sorted in like 5 mins",5],["Ethan","Came right away legit",5],["Reeces","Aged account was proper",5],["Liam","support was fast and normal not pushy",5],["Bayo","sharp sharp delivery",5],["Connor","Got everything in like 5 mins",5],["Milo","landed quick no issues",5],["Rory","was sorted fast",5],["Glen","easy handoff",5],["Jodie","Support was actually useful quick replies",5],["Rex","got sent in 5 mins flat",5],["Poppy","all sorted in about 5 mins",5],["Skye","came proper and fast",5],["Dylan","Found the mail in spam after 2 mins all good",5],["KJ","Support was quick no messing about",5],["Niko","worked straight away",5]] },
+  { productLine: "Wise Account | Bank Accounts", count: 21, entries: [["Damizz","Mine entered spam folder support told me check there after that easy",5],["Shay","uk one was calm got mail changed details done",5],["Hugo","Sweet fast mail too",5],["Nour","Showed up fast in my email smooth from there",5],["Vee","biz one was clean support moved fast too",5],["Swerwe","Got it same morning",5],["Destiny","came same day No issues at all",5],["Tariq","Was good and support checked in after rate that",5],["Bogdan","just worked",5],["Kemi","ah this one smooth well well entered spam but i saw am",5],["Tosin","Seller answer fast fast Everything correct",5],["Lola","business account came same day very nice",5],["Kuda","support dey active dem send am quick",5],["Mimi","arrived in my spam folder all sorted after",5],["Rae","was smooth and support was sweet",5],["Temi","e reach my mail fast i happy well",5],["Demi","came through same day",5],["Nkechi","business one land quick for mail",5],["Bree","Was in junk folder but support told me fast",5],["Yemi","everything clean no stress",5],["Luca","same day and easy to change after",5]] },
+  { productLine: "PayPal | Payment Processors", count: 18, entries: [["Miami","All good no headaches)",5],["Paige","Support was quick and didnt overtalk Worked fine",5],["Yara","Easy literally 5 mins",5],["Rash","us one came proper check spam if u dont see it first",5],["Q","crypto one was nice got all in one email",5],["Khaled","came in under an hour easy",5],["Liv","was ready did the job",5],["PJ","eu one was clean no complaints",5],["Ruthie","landed in email in minutes check junk if u dont see it",5],["Femi","i no even stress everything land correct for mail",5],["Nessa","went through smooth no weird stuff",5],["Aisha","was easy and support answered in mins",5],["Pav","clean and easy",5],["Efe","no get issue sharp delivery",5],["Maisie","turned up in junk mail lol worked fine after",5],["Ayo","this one legit abeg",5],["Tylarr","Mail came quick and support was sound",5],["Rico","all good literally no issue",5]] },
+  { productLine: "CashApp | Payment Processors", count: 16, entries: [["Teezy","Got it in a few mins One code came late but they handled it quick",4],["Burna","btc one came clean no wahala",5],["Dayo","got it in under 10 calm",5],["Manny","usa one arrived quick easy",5],["j2cold","simple and fast",5],["Ellioot","btc one was worth it nice and quick",5],["R9","got the account just needed one more msg for a code",4],["Sade","came sharp sharp no problem",5],["Jules","was simple and fast",5],["Ayo","this one clean die no cap",5],["Jax","was fast and worked fine",5],["Kachi","dem no stress me everything just flow",5],["Bashy","came fast enough no issue",5],["Fola","btc enter quick support sabi",5],["Melo","Mail was in spam but it was there",5],["Tino","came quick but one step was confusing",3]] },
+  { productLine: "Revolut Account | Bank Accounts", count: 11, entries: [["Ade","Sharp delivery support no stress at all",5],["Ice","came good one small mixup in the msg but support fixed it fast",4],["Gbemi","business one took small time but e came correct",5],["Mo","eu one came good and stayed fine after",5],["Rico","Needed one extra msg then all fine",4],["Ade","came proper short replies but fast and legit",4],["Moe","was fine took maybe 15 mins not 5",4],["Dayo","came complete no issue at all",5],["Lou","was good just not instant on my order",4],["Cleo","was good just had to wait a bit more",4],["Zee","all good after first login",5]] },
+  { productLine: "Chase Account | Bank Accounts", count: 9, entries: [["Lurker","Came same morning not exactly 5 mins for me but still quick",4],["Luca","aged one took longer than 5 mins but quality was better",5],["Preezy","fresh one was fine support was quick just bare short lol",4],["Jayden","was decent support was fast just very brief",4],["Chad","was good and support replied in minutes",5],["Pops","was alright took around 20 mins",4],["Carter","worked fine took a little longer than expected",4],["Lewis","was decent enough",4],["Ari","support replied fast and it worked fine",5]] },
+  { productLine: "Chime Account | Bank Accounts", count: 7, entries: [["Madz","Was okay email came fast msg was a bit rushed tho",4],["Farid","decent still support replied quick enough",4],["Tee","was alright account good msg looked rushed xd",4],["Tash","was okay just the message wording was off a bit",4],["mello","got it fast still just had to reread the mail",4],["Kels","all fine in the end support was quick",4],["Lani","came through fast enough no problems after",4]] },
+  { productLine: "Coinbase Account | Cryptocurrency Accounts", count: 3, entries: [["Zubz","Coinbase was okay bit slow that day but still got it",3],["Niko","was usable but slower than the rest",3],["Zino","crypto one was okay but slower than bank ones",3]] },
+  { productLine: "Bybit Account | Cryptocurrency Accounts", count: 1, entries: [["zkid","Worked but had to msg twice got sorted",3]] }
+];
+const totalReviewCount = reviewBlueprints.reduce((sum, bucket) => sum + bucket.count, 0);
+const today = new Date();
+const slidingAnchorDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+const reviewDates = Array.from({ length: totalReviewCount }, (_, index) => {
+  const date = new Date(slidingAnchorDate);
+  date.setDate(date.getDate() - index * 7);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+});
+let reviewDateIndex = 0;
+const reviewBuckets = reviewBlueprints.map((bucket) => ({
+  ...bucket,
+  remaining: bucket.count,
+  entryIndex: 0
+}));
+const reviews = [];
+
+while (reviews.length < totalReviewCount) {
+  for (const bucket of reviewBuckets) {
+    if (bucket.remaining <= 0) continue;
+    const [name, text, stars] = bucket.entries[bucket.entryIndex % bucket.entries.length];
+    const initialMatch = name.match(/[A-Za-z0-9]/);
+    reviews.push({
+      initial: initialMatch ? initialMatch[0].toUpperCase() : "?",
+      name,
+      date: reviewDates[reviewDateIndex++],
+      stars,
+      text,
+      productLine: bucket.productLine
+    });
+    bucket.remaining -= 1;
+    bucket.entryIndex += 1;
+  }
+}
+let currentReviewPage = 0;
+
+    function renderReviewSummary() {
+      if (!reviewAverageScore || !reviewAverageStars || !reviewAverageMeta || !reviewSummaryBreakdown || !reviews.length) {
+        return;
+      }
+
+      const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+      const average = totalStars / reviews.length;
+      const roundedAverage = Math.round(average * 10) / 10;
+      const filledStars = Math.round(average);
+      const starCounts = [5, 4, 3, 2, 1].map((star) => ({
+        star,
+        count: reviews.filter((review) => review.stars === star).length
+      }));
+
+      reviewAverageScore.textContent = roundedAverage.toFixed(1);
+      reviewAverageStars.textContent = `${"★".repeat(filledStars)}${"☆".repeat(5 - filledStars)}`;
+      reviewAverageStars.setAttribute("aria-label", `${roundedAverage.toFixed(1)} out of 5 stars`);
+      reviewAverageMeta.textContent = "Based on all reviews";
+      reviewSummaryBreakdown.innerHTML = starCounts.map(({ star, count }) => {
+        const percentage = Math.max(6, Math.round((count / reviews.length) * 100));
+        return `
+          <div class="review-summary-row">
+            <span class="review-summary-row-label">${star}★</span>
+            <span class="review-summary-row-bar"><span style="width: ${percentage}%"></span></span>
+            <span class="review-summary-row-value">${count}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderReviews(pageIndex = 0) {
+      if (!reviewGrid || !reviewPagination) return;
+      const totalPages = Math.max(1, Math.ceil(reviews.length / REVIEWS_PER_PAGE));
+      currentReviewPage = Math.max(0, Math.min(pageIndex, totalPages - 1));
+      const start = currentReviewPage * REVIEWS_PER_PAGE;
+      const pageItems = reviews.slice(start, start + REVIEWS_PER_PAGE);
+
+      reviewGrid.innerHTML = pageItems.map((review) => `
+        <article class="review-card">
+          <div class="review-card-head">
+            <div class="review-avatar">${review.initial}</div>
+            <div>
+              <strong>${review.name}</strong>
+            </div>
+            <span class="review-date">${review.date}</span>
+          </div>
+          <div class="review-stars" aria-label="${review.stars} star rating">${"★".repeat(review.stars)}</div>
+          <p class="review-text">${review.text}</p>
+          <p class="review-product-line">${review.productLine}</p>
+          <div class="review-meta">
+            <span class="review-badge-verified">✓ Verified purchase</span>
+          </div>
+        </article>
+      `).join("");
+
+      if (totalPages <= 1) {
+        reviewPagination.innerHTML = "";
+        reviewPagination.hidden = true;
+        return;
+      }
+
+      reviewPagination.hidden = false;
+      reviewPagination.innerHTML = `
+        <button class="review-page-button" type="button" data-page="${Math.max(0, currentReviewPage - 1)}" ${currentReviewPage === 0 ? "disabled" : ""}>Previous</button>
+        <span class="review-page-indicator">${currentReviewPage + 1} / ${totalPages}</span>
+        <button class="review-page-button" type="button" data-page="${Math.min(totalPages - 1, currentReviewPage + 1)}" ${currentReviewPage === totalPages - 1 ? "disabled" : ""}>Next</button>
+      `;
+    }
+
+    if (reviewPagination) {
+      reviewPagination.addEventListener("click", (event) => {
+        const button = event.target.closest(".review-page-button");
+        if (!button) return;
+        const nextPage = Number(button.dataset.page);
+        if (!Number.isFinite(nextPage)) return;
+        renderReviews(nextPage);
+      });
+    }
+
+    renderReviewSummary();
+    renderReviews(0);
+
+    function setReviewRating(value) {
+      const rating = String(value || "");
+      if (reviewRatingInput) {
+        reviewRatingInput.value = rating;
+      }
+      if (reviewRatingPicker) {
+        reviewRatingPicker.querySelectorAll(".review-rating-star").forEach((button) => {
+          const isActive = Number(button.dataset.rating) <= Number(rating || 0);
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-checked", button.dataset.rating === rating ? "true" : "false");
+        });
+      }
+    }
+
+    if (reviewRatingPicker) {
+      reviewRatingPicker.addEventListener("click", (event) => {
+        const button = event.target.closest(".review-rating-star");
+        if (!button) return;
+        setReviewRating(button.dataset.rating || "");
+      });
+    }
+
+    if (reviewForm && reviewStatus) {
+      reviewForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!reviewRatingInput?.value) {
+          reviewStatus.textContent = "Choose a star rating before submitting your review.";
+          reviewStatus.dataset.state = "error";
+          return;
+        }
+        reviewStatus.textContent = "Purchase not found please check your email or order number.";
+        reviewStatus.dataset.state = "error";
+      });
+    }
+  </script>
+  <script src="live-tracker.js"></script>
+</body>
+</html>

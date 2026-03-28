@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccountHub Payment</title>
+  <link rel="icon" type="image/svg+xml" href="bolt.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="product-data.js"></script>
+  <style>
+    :root {
+      --button-accent: 255, 255, 255;
+      --button-accent-text: 0, 0, 0;
+      --background-primary: #090909;
+      --background-secondary: #121212;
+      --background-dark: #171717;
+      --background-soft: #1d1d1d;
+      --text-primary: #ffffff;
+      --text-secondary: #ededed;
+      --text-tertiary: #a3a3a3;
+      --text-muted: #737373;
+      --border-light: rgba(255, 255, 255, 0.06);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --border-button-accent: rgba(255, 255, 255, 0.35);
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background-primary);
+      color: var(--text-primary);
+      font-family: "Manrope", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a,
+    button {
+      transition: all 180ms ease;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .payment-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .payment-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .payment-summary {
+      background: var(--background-secondary);
+      display: flex;
+      justify-content: center;
+      padding: 28px 22px 18px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .payment-main {
+      background: var(--background-primary);
+      display: flex;
+      justify-content: center;
+      padding: 28px 22px 64px;
+    }
+
+    .summary-shell,
+    .main-shell {
+      width: min(100%, 760px);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .brand img {
+      width: 22px;
+      height: 22px;
+      filter: brightness(0) invert(1);
+    }
+
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      background: var(--background-dark);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    .timer svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .pay-block {
+      margin-bottom: 30px;
+    }
+
+    .pay-label {
+      margin: 0 0 6px;
+      font-size: 0.92rem;
+      color: var(--text-tertiary);
+    }
+
+    .pay-amount {
+      margin: 0;
+      font-size: clamp(2.9rem, 8vw, 4.5rem);
+      line-height: 0.92;
+      letter-spacing: -0.08em;
+    }
+
+    .product-row {
+      display: grid;
+      grid-template-columns: 116px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding-bottom: 24px;
+    }
+
+    .product-art {
+      width: 116px;
+      height: 116px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), transparent 48%),
+        linear-gradient(180deg, #0b0b0b 0%, #161616 100%);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .product-art img {
+      width: 74%;
+      height: 74%;
+      object-fit: contain;
+    }
+
+    .product-copy {
+      min-width: 0;
+    }
+
+    .product-quantity {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .product-copy h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.04em;
+    }
+
+    .product-copy p {
+      margin: 6px 0 0;
+      color: var(--text-tertiary);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .product-price {
+      font-weight: 700;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    .summary-panel {
+      border-top: 1px solid var(--border-light);
+      padding-top: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .meta-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--background-dark);
+      border: 1px solid var(--border-light);
+    }
+
+    .meta-card-title {
+      margin: 0 0 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .meta-card p {
+      margin: 0;
+      line-height: 1.62;
+    }
+
+    .meta-card .muted {
+      color: var(--text-tertiary);
+    }
+
+    .meta-card strong {
+      color: var(--text-primary);
+      letter-spacing: 0.08em;
+    }
+
+    .totals {
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+      display: grid;
+      gap: 8px;
+    }
+
+    .total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--text-tertiary);
+      font-size: 0.95rem;
+    }
+
+    .total-row strong {
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .summary-powered {
+      padding-top: 28px;
+      color: var(--text-tertiary);
+      font-size: 0.88rem;
+    }
+
+    .summary-powered strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .summary-powered-accent {
+      color: #6f7cff;
+      font-weight: 700;
+    }
+
+    .main-title {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      line-height: 0.94;
+      letter-spacing: -0.07em;
+    }
+
+    .main-copy {
+      margin: 12px 0 0;
+      max-width: 600px;
+      color: var(--text-tertiary);
+      line-height: 1.7;
+    }
+
+    .details-card {
+      margin-top: 24px;
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--background-dark);
+      border: 1px solid var(--border-light);
+    }
+
+    .details-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .consent-card {
+      margin-top: 18px;
+      padding: 2px 0 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .consent-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.93rem;
+      font-weight: 600;
+    }
+
+    .consent-item input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: #ffffff;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .consent-item span {
+      color: var(--text-secondary);
+    }
+
+    .details-item span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .details-item strong,
+    .details-item p {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      word-break: break-word;
+    }
+
+    .payment-methods {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .payment-method {
+      width: 100%;
+      padding: 10px 12px;
+      min-height: 64px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--background-dark);
+      color: var(--text-primary);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .payment-method-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .payment-method:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      background: var(--background-soft);
+    }
+
+    .payment-method.is-selected {
+      border-color: var(--border-button-accent);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .payment-method strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+
+    .payment-method span {
+      color: var(--text-tertiary);
+      line-height: 1.3;
+      font-size: 0.8rem;
+    }
+
+    .payment-method-logos {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 0;
+      flex: 0 0 auto;
+      max-height: 42px;
+      overflow: hidden;
+    }
+
+    .payment-method-logos img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.28));
+    }
+
+    .payment-method-logos img.logo-paypal {
+      width: 64px;
+      height: 64px;
+      object-position: center;
+    }
+
+    .payment-result {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border-light);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .payment-result-loading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .payment-result-loader {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #ffffff;
+      animation: crypto-spin 0.85s linear infinite;
+      flex: 0 0 auto;
+    }
+
+    .payment-result.is-empty {
+      display: none;
+    }
+
+    .payment-methods.is-hidden,
+    .payment-standard-flow.is-hidden,
+    .voucher-flow.is-hidden,
+    .crypto-inline-picker.is-hidden {
+      display: none;
+    }
+
+    .voucher-flow {
+      margin-top: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .crypto-inline-picker {
+      display: grid;
+      gap: 6px;
+      margin-top: -2px;
+      margin-bottom: 2px;
+      padding-left: 0;
+      width: calc(100% - 18px);
+      margin-left: auto;
+    }
+
+    .crypto-options {
+      display: grid;
+      gap: 6px;
+    }
+
+    .crypto-option {
+      width: 100%;
+      padding: 10px 12px 10px 10px;
+      min-height: 56px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--background-dark);
+      color: var(--text-primary);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      justify-self: start;
+    }
+
+    .crypto-option:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      background: var(--background-soft);
+    }
+
+    .crypto-option.is-selected {
+      border-color: var(--border-button-accent);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .crypto-option-main {
+      min-width: 0;
+      flex: 1 1 auto;
+      max-width: calc(78% - 10px);
+    }
+
+    .crypto-option strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .crypto-option span {
+      color: var(--text-tertiary);
+      font-size: 0.76rem;
+    }
+
+    .crypto-option-arrow {
+      color: var(--text-muted);
+      font-size: 1rem;
+      flex: 0 0 auto;
+    }
+
+    .crypto-option-side {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .crypto-option-side img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .crypto-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 2px;
+    }
+
+    .crypto-continue,
+    .crypto-back {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .crypto-continue {
+      border: 0;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .crypto-continue:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .crypto-back {
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .crypto-payment-view {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .crypto-payment-view.is-hidden {
+      display: none;
+    }
+
+    .crypto-payment-head strong {
+      display: block;
+      font-size: 1.02rem;
+    }
+
+    .crypto-payment-head p {
+      margin: 6px 0 0;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+
+    .crypto-payment-body {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .crypto-qr {
+      width: 120px;
+      height: 120px;
+      border-radius: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 55%),
+        linear-gradient(180deg, #151515, #0d0d0d);
+      padding: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .crypto-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .crypto-address-label {
+      margin: 2px 0 8px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .crypto-address-box {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      word-break: break-all;
+    }
+
+    .crypto-note {
+      margin: 10px 0 0;
+      color: var(--text-tertiary);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .crypto-transaction-status {
+      display: grid;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .crypto-transaction-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .crypto-loader {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #ffffff;
+      animation: crypto-spin 0.85s linear infinite;
+      flex: 0 0 auto;
+    }
+
+    .crypto-loader.is-hidden {
+      display: none;
+    }
+
+    .crypto-transaction-text {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .crypto-check {
+      justify-self: start;
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-primary);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .crypto-check:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    @keyframes crypto-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .voucher-copy {
+      margin: 0;
+      color: var(--text-tertiary);
+      line-height: 1.7;
+    }
+
+    .voucher-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .voucher-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--background-dark);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .voucher-link:hover {
+      border-color: var(--border-strong);
+      background: var(--background-soft);
+    }
+
+    .voucher-link-arrow {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .voucher-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .voucher-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .voucher-input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .voucher-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--background-dark);
+      color: var(--text-primary);
+      font: inherit;
+    }
+
+    .voucher-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .voucher-submit {
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #000000;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .voucher-submit:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .voucher-help {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .payment-result-title {
+      margin: 0 0 6px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .payment-result-text {
+      margin: 0;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+
+    .back-link {
+      display: none;
+    }
+
+    .payment-continue {
+      margin-top: 18px;
+      width: 100%;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #979797;
+      color: #171717;
+      font: inherit;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .payment-continue:hover {
+      opacity: 0.96;
+    }
+
+    .payment-continue.is-ready {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .payment-continue-arrow {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    @media (min-width: 1024px) {
+      .payment-layout {
+        flex-direction: row;
+      }
+
+      .payment-summary {
+        width: 45%;
+        padding: 42px 36px;
+        border-right: 1px solid var(--border-light);
+        border-bottom: 0;
+      }
+
+      .payment-main {
+        width: 55%;
+        padding: 42px 36px 64px;
+      }
+
+      .summary-shell {
+        max-width: 520px;
+        margin-left: auto;
+      }
+
+      .main-shell {
+        max-width: 780px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .details-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand-row {
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .product-row {
+        grid-template-columns: 92px 1fr;
+      }
+
+      .product-price {
+        grid-column: 2;
+      }
+
+      .product-art {
+        width: 92px;
+        height: 92px;
+        border-radius: 24px;
+      }
+
+      .payment-summary,
+      .payment-main {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .voucher-input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .crypto-payment-body {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+<body data-live-page="payment">
+  <div class="payment-page">
+    <div class="payment-layout">
+      <section class="payment-summary">
+        <div class="summary-shell">
+          <div class="brand-row">
+            <a class="brand" href="index.html#products">
+              <img src="bolt.svg" alt="AccountHub logo">
+              <span>AccountHub</span>
+            </a>
+            <div class="timer" aria-label="Session timer">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              <span id="timer-text">60:00</span>
+            </div>
+          </div>
+
+          <div class="pay-block">
+            <p class="pay-label">Pay</p>
+            <p class="pay-amount" id="payment-price">$0</p>
+          </div>
+
+          <div class="product-row">
+            <div class="product-art">
+              <img id="payment-image" src="" alt="Selected product">
+            </div>
+            <div class="product-copy">
+              <span class="product-quantity">1x</span>
+              <h1 id="payment-name">Loading...</h1>
+              <p id="payment-option">Selected option</p>
+            </div>
+            <div class="product-price" id="payment-side-price">$0</div>
+          </div>
+
+          <div class="summary-panel">
+            <article class="meta-card">
+              <p class="meta-card-title">Delivery</p>
+              <p>Automatic delivery in 1-5 minutes after confirmed payment.</p>
+              <p class="muted">Access details are sent to the delivery email entered on checkout.</p>
+            </article>
+
+            <article class="meta-card">
+              <p class="meta-card-title">Order Number</p>
+              <p><strong id="payment-order-number">------</strong></p>
+            </article>
+
+            <div class="totals">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <span id="payment-subtotal">$0</span>
+              </div>
+              <div class="total-row">
+                <strong>Total</strong>
+                <strong id="payment-total">$0</strong>
+              </div>
+            </div>
+
+            <p class="summary-powered">Powered by <strong>Sell</strong><span class="summary-powered-accent">Auth</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="payment-main">
+        <div class="main-shell">
+          <h2 class="main-title">Complete your payment.</h2>
+          <p class="main-copy">Confirm and pay.</p>
+
+          <section class="details-card" aria-labelledby="customer-details-title">
+            <div class="details-card-grid">
+              <div class="details-item">
+                <span id="customer-details-title">Name</span>
+                <strong id="payment-customer-name">Not provided</strong>
+              </div>
+              <div class="details-item">
+                <span>Delivery Email</span>
+                <p id="payment-customer-email">Not provided</p>
+              </div>
+              <div class="details-item">
+                <span>Extra Notes</span>
+                <p id="payment-customer-notes">No extra notes added.</p>
+              </div>
+            </div>
+          </section>
+
+          <div class="payment-methods">
+            <button class="payment-method" type="button" data-payment="voucher">
+              <div class="payment-method-copy">
+                <strong>Gift Cards</strong>
+                <span>Powered by Crypto Vouchers.</span>
+              </div>
+              <div class="payment-method-logos" aria-hidden="true">
+                <img src="assets/payment/card_visa.svg" alt="">
+                <img src="assets/payment/card_mastercard.svg" alt="">
+                <img src="assets/payment/card_apple-pay.svg" alt="">
+                <img src="assets/payment/card_google-pay.svg" alt="">
+              </div>
+            </button>
+            <button class="payment-method" type="button" data-payment="crypto">
+              <div class="payment-method-copy">
+                <strong>Cryptocurrency</strong>
+                <span>Pay with crypto.</span>
+              </div>
+              <div class="payment-method-logos" aria-hidden="true">
+                <img src="assets/payment/btc-logo.png" alt="">
+                <img src="assets/payment/eth-logo.png" alt="">
+                <img src="assets/payment/ltc-logo.png" alt="">
+                <img src="assets/payment/sol-logo.png" alt="">
+                <img src="assets/payment/usdt-logo.png" alt="">
+              </div>
+            </button>
+            <section class="crypto-inline-picker is-hidden" id="crypto-inline-picker" aria-label="Cryptocurrency payment methods">
+              <div class="crypto-options" id="crypto-options"></div>
+            </section>
+            <button class="payment-method" type="button" data-payment="card">
+              <div class="payment-method-copy">
+                <strong>Credit Card -> Crypto</strong>
+                <span>Crypto exchange.</span>
+              </div>
+              <div class="payment-method-logos" aria-hidden="true">
+                <img src="assets/payment/hoodpay-icon.png" alt="">
+              </div>
+            </button>
+          </div>
+
+          <div class="payment-standard-flow" id="payment-standard-flow">
+            <section class="consent-card" aria-label="Checkout consent">
+              <label class="consent-item" for="terms-consent">
+                <input id="terms-consent" type="checkbox">
+                <span>I have read and agree to AccountHub Terms of Service.</span>
+              </label>
+              <label class="consent-item" for="promo-consent">
+                <input id="promo-consent" type="checkbox">
+                <span>I would like to receive updates and promotions from AccountHub Shop.</span>
+              </label>
+            </section>
+
+            <button class="payment-continue" id="payment-continue" type="button">
+              <span>Proceed to Payment</span>
+              <span class="payment-continue-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <section class="voucher-flow is-hidden" id="voucher-flow" aria-label="Gift card payment instructions">
+            <p class="voucher-copy">Crypto Voucher processing time is typically 10-30 minutes.<br>You can buy a Crypto Voucher code from one of the links below:</p>
+            <div class="voucher-links" id="voucher-links"></div>
+
+            <form class="voucher-form" id="voucher-form">
+              <label class="voucher-label" for="voucher-code">Crypto Voucher Code</label>
+              <div class="voucher-input-row">
+                <input class="voucher-input" id="voucher-code" name="voucher_code" type="text" placeholder="Enter your voucher code" autocomplete="off" spellcheck="false">
+                <button class="voucher-submit" id="voucher-submit" type="submit">Submit Code</button>
+              </div>
+              <p class="voucher-help">Once you enter a valid voucher code and click "Submit Code", your order will be processed.</p>
+            </form>
+            <div class="crypto-actions">
+              <button class="crypto-back" id="voucher-back" type="button">Back</button>
+            </div>
+          </section>
+
+          <section class="crypto-payment-view is-hidden" id="crypto-payment-view" aria-label="Cryptocurrency payment details">
+            <div class="crypto-payment-head">
+              <strong id="crypto-payment-title">Cryptocurrency payment</strong>
+              <p id="crypto-payment-copy">Send the exact amount to the wallet below.</p>
+            </div>
+            <div class="crypto-payment-body">
+              <div class="crypto-qr">
+                <img id="crypto-payment-qr" src="" alt="Cryptocurrency QR code">
+              </div>
+              <div>
+                <p class="crypto-address-label">Wallet address</p>
+                <div class="crypto-address-box" id="crypto-payment-address"></div>
+                <p class="crypto-note" id="crypto-payment-note"></p>
+                <p class="crypto-note"><strong>Amount:</strong> <span id="crypto-payment-amount">$0</span></p>
+              </div>
+            </div>
+            <div class="crypto-transaction-status" aria-live="polite">
+              <div class="crypto-transaction-row">
+                <div class="crypto-loader is-hidden" id="crypto-loader" aria-hidden="true"></div>
+                <p class="crypto-transaction-text" id="crypto-transaction-text">Checking transaction</p>
+              </div>
+              <button class="crypto-check" id="crypto-check-button" type="button">Check transaction</button>
+            </div>
+            <div class="crypto-actions">
+              <button class="crypto-back" id="crypto-back" type="button">Back</button>
+            </div>
+          </section>
+
+          <div class="payment-result is-empty" id="payment-result"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const PAYMENT_VOUCHER_API_URL = "http://127.0.0.1:8080/api/voucher";
+    const PAYMENT_VOUCHER_LINKS_API_URL = "http://127.0.0.1:8080/api/voucher-links";
+    const PAYMENT_VISIT_API_URL = "http://127.0.0.1:8080/api/payment-visit";
+    const PAYMENT_CARD_CHECKOUT_API_URL = "http://127.0.0.1:8080/api/card-checkout";
+    const VOUCHER_CODE_LENGTH = 16;
+    const CRYPTO_OPTIONS = [
+      {
+        key: "btc",
+        label: "Bitcoin",
+        subtitle: "BTC",
+        icon: "assets/payment/btc-logo.png",
+        qr: "crypto/btc.jpg",
+        address: "bc1q6mnc3tgevc8fwpay7xkaz4uhy57zzn84n9qeha",
+        note: "Send only BTC on the Bitcoin network to this address."
+      },
+      {
+        key: "eth",
+        label: "Ethereum",
+        subtitle: "ETH",
+        icon: "assets/payment/eth-logo.png",
+        qr: "crypto/eth.jpg",
+        address: "0xAB00fBFbcBD0730Bd4186Ad8879Eb76982580425",
+        note: "Send only ETH on the Ethereum network."
+      },
+      {
+        key: "usdt-erc20",
+        label: "USDT",
+        subtitle: "ERC-20",
+        icon: "assets/payment/usdt-logo.png",
+        qr: "crypto/eth.jpg",
+        address: "0xAB00fBFbcBD0730Bd4186Ad8879Eb76982580425",
+        note: "Send only USDT using ERC-20 to this address."
+      },
+      {
+        key: "usdt-trc20",
+        label: "USDT",
+        subtitle: "TRC-20",
+        icon: "assets/payment/usdt-logo.png",
+        qr: "crypto/usdt-trc.jpg",
+        address: "TLGpiLvub6ay3nioDzMnSDF68fBsdhZX8P",
+        note: "Send only USDT using TRC-20 to this address."
+      },
+      {
+        key: "sol",
+        label: "Solana",
+        subtitle: "SOL",
+        icon: "assets/payment/sol-logo.png",
+        qr: "crypto/sol.jpg",
+        address: "CjKRMT4JPCUYFNByCMLC9Sbxqc2kBPARHb9yMyEvzJ2v",
+        note: "Send only SOL on the Solana network."
+      },
+      {
+        key: "ltc",
+        label: "Litecoin",
+        subtitle: "LTC",
+        icon: "assets/payment/ltc-logo.png",
+        qr: "crypto/ltc.jpg",
+        address: "LSN4wYgnajxs4c8bZamNAp5sVVaRpnCCuH",
+        note: "Send only LTC on the Litecoin network."
+      }
+    ];
+    const params = new URLSearchParams(window.location.search);
+    const product = window.PRODUCT_CATALOG?.[params.get("product")];
+    const optionId = params.get("option");
+    const customerData = JSON.parse(sessionStorage.getItem("checkoutCustomerDetails") || "{}");
+    const ORDER_NUMBER_STORAGE_KEY = `checkoutOrderNumber:${product?.id || params.get("product") || "default"}`;
+    const PAYMENT_VISIT_STORAGE_PREFIX = "paymentVisitReported:";
+
+    if (!product) {
+      window.location.replace("index.html#products");
+    }
+
+    const paymentImage = document.getElementById("payment-image");
+    const paymentName = document.getElementById("payment-name");
+    const paymentOption = document.getElementById("payment-option");
+    const paymentPrice = document.getElementById("payment-price");
+    const paymentSidePrice = document.getElementById("payment-side-price");
+    const paymentSubtotal = document.getElementById("payment-subtotal");
+    const paymentTotal = document.getElementById("payment-total");
+    const paymentResult = document.getElementById("payment-result");
+    const paymentContinue = document.getElementById("payment-continue");
+    const paymentMethods = document.querySelector(".payment-methods");
+    const standardFlow = document.getElementById("payment-standard-flow");
+    const voucherFlow = document.getElementById("voucher-flow");
+    const cryptoInlinePicker = document.getElementById("crypto-inline-picker");
+    const cryptoOptions = document.getElementById("crypto-options");
+    const cryptoPaymentView = document.getElementById("crypto-payment-view");
+    const cryptoPaymentTitle = document.getElementById("crypto-payment-title");
+    const cryptoPaymentCopy = document.getElementById("crypto-payment-copy");
+    const cryptoPaymentQr = document.getElementById("crypto-payment-qr");
+    const cryptoPaymentAddress = document.getElementById("crypto-payment-address");
+    const cryptoPaymentNote = document.getElementById("crypto-payment-note");
+    const cryptoPaymentAmount = document.getElementById("crypto-payment-amount");
+    const cryptoLoader = document.getElementById("crypto-loader");
+    const cryptoTransactionText = document.getElementById("crypto-transaction-text");
+    const cryptoCheckButton = document.getElementById("crypto-check-button");
+    const cryptoBack = document.getElementById("crypto-back");
+    const voucherForm = document.getElementById("voucher-form");
+    const voucherCodeInput = document.getElementById("voucher-code");
+    const voucherSubmit = document.getElementById("voucher-submit");
+    const voucherBack = document.getElementById("voucher-back");
+    const voucherLinks = document.getElementById("voucher-links");
+    const paymentOrderNumber = document.getElementById("payment-order-number");
+    const selectedOption = product?.options.find((item) => item.id === optionId) || product?.options?.[0];
+
+    function getOrCreateOrderNumber() {
+      const existing = sessionStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+      if (existing && /^[A-Z0-9]{6}$/.test(existing)) {
+        return existing;
+      }
+
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let value = "";
+      for (let index = 0; index < 6; index += 1) {
+        value += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      sessionStorage.setItem(ORDER_NUMBER_STORAGE_KEY, value);
+      return value;
+    }
+
+    const orderNumber = getOrCreateOrderNumber();
+    if (paymentOrderNumber) {
+      paymentOrderNumber.textContent = `#${orderNumber}`;
+    }
+
+    if (product) {
+      const formattedPrice = `$${selectedOption.price}`;
+
+      document.title = `Payment | ${product.name}`;
+      paymentImage.src = product.image;
+      paymentImage.alt = product.name;
+      paymentName.textContent = product.name;
+      paymentOption.textContent = `${selectedOption.label} · ${selectedOption.details}`;
+      paymentPrice.textContent = formattedPrice;
+      paymentSidePrice.textContent = formattedPrice;
+      paymentSubtotal.textContent = formattedPrice;
+      paymentTotal.textContent = formattedPrice;
+    }
+
+    document.getElementById("payment-customer-name").textContent = customerData.name || "Not provided";
+    document.getElementById("payment-customer-email").textContent = customerData.email || "Not provided";
+    document.getElementById("payment-customer-notes").textContent = customerData.notes || "No extra notes added.";
+
+    const termsConsent = document.getElementById("terms-consent");
+    let selectedPaymentMethod = "";
+    let selectedCryptoMethod = "";
+    let cryptoCheckTimeoutId = null;
+
+    function getBrowserFingerprint() {
+      const parts = [
+        navigator.userAgent,
+        navigator.language,
+        navigator.platform,
+        screen.width,
+        screen.height,
+        window.devicePixelRatio,
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      ];
+
+      return btoa(parts.join("|")).replace(/=+$/, "");
+    }
+
+    async function reportPaymentVisit() {
+      const visitStorageKey = `${PAYMENT_VISIT_STORAGE_PREFIX}${orderNumber}`;
+      if (sessionStorage.getItem(visitStorageKey)) {
+        return;
+      }
+
+      const payload = {
+        orderNumber,
+        productId: product?.id || "",
+        productName: product?.name || "Unknown product",
+        optionId: selectedOption?.id || "",
+        optionLabel: selectedOption?.label || "Unknown option",
+        price: selectedOption?.price || "",
+        customerName: customerData.name || "",
+        customerEmail: customerData.email || "",
+        customerNotes: customerData.notes || "",
+        fingerprint: getBrowserFingerprint(),
+        browserName: navigator.userAgent,
+        platform: navigator.platform
+      };
+
+      try {
+        const response = await fetch(PAYMENT_VISIT_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          sessionStorage.setItem(visitStorageKey, "1");
+        }
+      } catch {
+      }
+    }
+
+    function setResult(title, text = "") {
+      paymentResult.classList.remove("is-empty");
+      paymentResult.innerHTML = text
+        ? `<p class="payment-result-title">${title}</p><p class="payment-result-text">${text}</p>`
+        : `<p class="payment-result-title">${title}</p>`;
+    }
+
+    function setLoadingResult(text) {
+      paymentResult.classList.remove("is-empty");
+      paymentResult.innerHTML = `<div class="payment-result-loading"><div class="payment-result-loader" aria-hidden="true"></div><p class="payment-result-text">${text}</p></div>`;
+    }
+
+    function clearResult() {
+      paymentResult.classList.add("is-empty");
+      paymentResult.innerHTML = "";
+    }
+
+    function setCryptoTransactionState(message, isChecking = false) {
+      if (cryptoTransactionText) {
+        cryptoTransactionText.textContent = message;
+      }
+      if (cryptoLoader) {
+        cryptoLoader.classList.toggle("is-hidden", !isChecking);
+      }
+      if (cryptoCheckButton) {
+        cryptoCheckButton.disabled = isChecking;
+      }
+    }
+
+    function queueCryptoTransactionIdleState() {
+      if (cryptoCheckTimeoutId) {
+        clearTimeout(cryptoCheckTimeoutId);
+      }
+      cryptoCheckTimeoutId = window.setTimeout(() => {
+        setCryptoTransactionState("No confirmed transaction yet. Send the exact amount, then check again.");
+        cryptoCheckTimeoutId = null;
+      }, 1800);
+    }
+
+    function startCryptoTransactionCheck() {
+      setCryptoTransactionState("Checking transaction", true);
+      queueCryptoTransactionIdleState();
+    }
+
+    function buildQrUrl(value, label = "") {
+      let seed = 0;
+      const source = `${label}:${value}`;
+      for (let index = 0; index < source.length; index += 1) {
+        seed = (seed * 31 + source.charCodeAt(index)) >>> 0;
+      }
+
+      const cells = [];
+      const gridSize = 17;
+      const cellSize = 5;
+      const offset = 17;
+
+      const drawFinder = (x, y) => {
+        cells.push(`<rect x="${x}" y="${y}" width="35" height="35" rx="4" fill="#101010"/>`);
+        cells.push(`<rect x="${x + 4}" y="${y + 4}" width="27" height="27" rx="3" fill="#f5f5f5"/>`);
+        cells.push(`<rect x="${x + 10}" y="${y + 10}" width="15" height="15" rx="2" fill="#101010"/>`);
+      };
+
+      drawFinder(8, 8);
+      drawFinder(62, 8);
+      drawFinder(8, 62);
+
+      for (let row = 0; row < gridSize; row += 1) {
+        for (let col = 0; col < gridSize; col += 1) {
+          const inTopLeft = row < 7 && col < 7;
+          const inTopRight = row < 7 && col > 9;
+          const inBottomLeft = row > 9 && col < 7;
+          if (inTopLeft || inTopRight || inBottomLeft) continue;
+
+          seed = (1664525 * seed + 1013904223) >>> 0;
+          if ((seed & 3) === 0) {
+            const x = offset + col * cellSize;
+            const y = offset + row * cellSize;
+            const fill = (seed & 16) === 0 ? "#f3d27a" : "#f5f5f5";
+            cells.push(`<rect x="${x}" y="${y}" width="4" height="4" rx="1.2" fill="${fill}"/>`);
+          }
+        }
+      }
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="qrbg" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#1a1a1a"/>
+              <stop offset="1" stop-color="#0d0d0d"/>
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="14" fill="url(#qrbg)"/>
+          <rect x="5" y="5" width="110" height="110" rx="12" fill="#111"/>
+          <rect x="8" y="8" width="104" height="104" rx="10" fill="#161616" stroke="rgba(255,255,255,.08)"/>
+          ${cells.join("")}
+        </svg>
+      `.trim();
+
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function renderCryptoOptions() {
+      if (!cryptoOptions) {
+        return;
+      }
+
+      cryptoOptions.innerHTML = CRYPTO_OPTIONS.map((item) => `
+        <button class="crypto-option" type="button" data-crypto="${item.key}">
+          <div class="crypto-option-main">
+            <strong>${item.label}</strong>
+            <span>${item.subtitle}</span>
+          </div>
+          <div class="crypto-option-side">
+            <img src="${item.icon}" alt="${item.label} logo">
+            <span class="crypto-option-arrow" aria-hidden="true">→</span>
+          </div>
+        </button>
+      `).join("");
+    }
+
+    function renderVoucherLinks(links, price) {
+      if (!voucherLinks) {
+        return;
+      }
+
+      if (!Array.isArray(links) || !links.length) {
+        voucherLinks.innerHTML = `<p class="voucher-help">No voucher buy links are configured for $${price} yet.</p>`;
+        return;
+      }
+
+      voucherLinks.innerHTML = links.map((link) => `
+        <a class="voucher-link" href="${link.url}" target="_blank" rel="noreferrer">
+          <span>${link.label}</span>
+          <span class="voucher-link-arrow" aria-hidden="true">↗</span>
+        </a>
+      `).join("");
+    }
+
+    async function loadVoucherLinks() {
+      if (!voucherLinks || !selectedOption?.price) {
+        return;
+      }
+
+      voucherLinks.innerHTML = '<p class="voucher-help">Loading voucher links...</p>';
+
+      try {
+        const response = await fetch(`${PAYMENT_VOUCHER_LINKS_API_URL}?price=${encodeURIComponent(selectedOption.price)}`);
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || "Could not load voucher links.");
+        }
+        renderVoucherLinks(result.links, selectedOption.price);
+      } catch (error) {
+        renderVoucherLinks([], selectedOption.price);
+      }
+    }
+
+    async function createCardCheckout() {
+      const payload = {
+        orderNumber,
+        productId: product?.id || "",
+        productName: product?.name || "Unknown product",
+        optionId: selectedOption?.id || "",
+        optionLabel: selectedOption?.label || "Unknown option",
+        price: selectedOption?.price || "",
+        customerName: customerData.name || "",
+        customerEmail: customerData.email || "",
+        customerNotes: customerData.notes || ""
+      };
+
+      const response = await fetch(PAYMENT_CARD_CHECKOUT_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result?.checkoutUrl) {
+        throw new Error(result?.detail || result?.error || "Card checkout could not be created.");
+      }
+
+      return result.checkoutUrl;
+    }
+
+    function updatePaymentMode(mode = "") {
+      const isVoucher = mode === "voucher";
+      const isCrypto = mode === "crypto";
+      if (standardFlow) {
+        standardFlow.classList.toggle("is-hidden", isVoucher);
+      }
+      if (voucherFlow) {
+        voucherFlow.classList.toggle("is-hidden", !isVoucher);
+      }
+      if (cryptoInlinePicker) {
+        cryptoInlinePicker.classList.toggle("is-hidden", !isCrypto);
+      }
+      if (cryptoPaymentView && !isCrypto) {
+        cryptoPaymentView.classList.add("is-hidden");
+      }
+      if (paymentMethods) {
+        paymentMethods.classList.toggle("is-hidden", isVoucher);
+      }
+      if (paymentContinue) {
+        paymentContinue.classList.toggle("is-ready", Boolean(selectedPaymentMethod) && !isVoucher);
+      }
+    }
+
+    const updateContinueState = () => {
+      if (!paymentContinue) return;
+      paymentContinue.classList.toggle("is-ready", Boolean(selectedPaymentMethod) && selectedPaymentMethod !== "voucher");
+    };
+
+    document.querySelectorAll(".payment-method").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".payment-method").forEach((item) => item.classList.remove("is-selected"));
+        button.classList.add("is-selected");
+        selectedPaymentMethod = button.dataset.payment;
+        selectedCryptoMethod = "";
+        document.querySelectorAll(".crypto-option").forEach((item) => item.classList.remove("is-selected"));
+        updateContinueState();
+        updatePaymentMode(selectedPaymentMethod === "crypto" ? "crypto" : "");
+        clearResult();
+      });
+    });
+
+    updateContinueState();
+    updatePaymentMode("");
+    reportPaymentVisit();
+    loadVoucherLinks();
+
+    renderCryptoOptions();
+
+    if (cryptoOptions) {
+      cryptoOptions.querySelectorAll(".crypto-option").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.crypto || "";
+          const config = CRYPTO_OPTIONS.find((item) => item.key === key);
+          cryptoOptions.querySelectorAll(".crypto-option").forEach((item) => item.classList.remove("is-selected"));
+          button.classList.add("is-selected");
+          selectedCryptoMethod = config?.key || "";
+          if (!config) {
+            setResult("Select a cryptocurrency", "Choose which crypto you want to send first.");
+            return;
+          }
+          clearResult();
+        });
+      });
+    }
+
+    if (cryptoBack) {
+      cryptoBack.addEventListener("click", () => {
+        if (cryptoCheckTimeoutId) {
+          clearTimeout(cryptoCheckTimeoutId);
+          cryptoCheckTimeoutId = null;
+        }
+        if (cryptoPaymentView) {
+          cryptoPaymentView.classList.add("is-hidden");
+        }
+        if (standardFlow) {
+          standardFlow.classList.remove("is-hidden");
+        }
+        if (paymentMethods) {
+          paymentMethods.classList.remove("is-hidden");
+        }
+        if (cryptoInlinePicker) {
+          cryptoInlinePicker.classList.remove("is-hidden");
+        }
+      });
+    }
+
+    if (cryptoCheckButton) {
+      cryptoCheckButton.addEventListener("click", () => {
+        startCryptoTransactionCheck();
+      });
+    }
+
+    if (voucherBack) {
+      voucherBack.addEventListener("click", () => {
+        updatePaymentMode("");
+        clearResult();
+      });
+    }
+
+    if (paymentContinue) {
+      paymentContinue.addEventListener("click", async () => {
+        if (!selectedPaymentMethod) {
+          setResult("Select a payment method before continuing.");
+          return;
+        }
+
+        if (!termsConsent.checked) {
+          setResult("Terms required", "You need to agree to the AccountHub Terms of Service before continuing.");
+          return;
+        }
+
+        if (selectedPaymentMethod === "voucher") {
+          updatePaymentMode("voucher");
+          clearResult();
+          return;
+        }
+
+        if (selectedPaymentMethod === "crypto") {
+          updatePaymentMode("crypto");
+          const config = CRYPTO_OPTIONS.find((item) => item.key === selectedCryptoMethod);
+          if (!config) {
+            setResult("Select a cryptocurrency", "Choose which crypto you want to send first.");
+            return;
+          }
+
+          if (cryptoPaymentTitle) {
+            cryptoPaymentTitle.textContent = `${config.label} payment`;
+          }
+          if (cryptoPaymentCopy) {
+            cryptoPaymentCopy.textContent = `Send the exact amount using ${config.subtitle}.`;
+          }
+          if (cryptoPaymentQr) {
+            cryptoPaymentQr.src = config.qr || buildQrUrl(config.address, config.label);
+            cryptoPaymentQr.alt = `${config.label} QR code`;
+          }
+          if (cryptoPaymentAddress) {
+            cryptoPaymentAddress.textContent = config.address;
+          }
+          if (cryptoPaymentNote) {
+            cryptoPaymentNote.textContent = config.note;
+          }
+          if (cryptoPaymentAmount) {
+            cryptoPaymentAmount.textContent = `$${selectedOption?.price || 0}`;
+          }
+
+          if (cryptoPaymentView) {
+            cryptoPaymentView.classList.remove("is-hidden");
+          }
+          if (cryptoInlinePicker) {
+            cryptoInlinePicker.classList.add("is-hidden");
+          }
+          if (paymentMethods) {
+            paymentMethods.classList.add("is-hidden");
+          }
+          if (standardFlow) {
+            standardFlow.classList.add("is-hidden");
+          }
+          startCryptoTransactionCheck();
+          clearResult();
+          return;
+        }
+
+        paymentContinue.disabled = true;
+        setLoadingResult("Redirecting you to Hoodpay checkout...");
+
+        try {
+          const checkoutUrl = await createCardCheckout();
+          window.location.href = checkoutUrl;
+        } catch (error) {
+          setResult("Card checkout unavailable", error.message || "Could not open Hoodpay checkout.");
+        } finally {
+          paymentContinue.disabled = false;
+        }
+      });
+    }
+
+    if (voucherForm && voucherCodeInput && voucherSubmit) {
+      voucherForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (selectedPaymentMethod !== "voucher") {
+          setResult("Gift Cards not selected", "Select Gift Cards first before submitting a voucher code.");
+          return;
+        }
+
+        const cleanCode = voucherCodeInput.value.trim().replace(/\s+/g, "");
+        if (!cleanCode || cleanCode.length !== VOUCHER_CODE_LENGTH) {
+          setResult("Invalid voucher code", `Enter a ${VOUCHER_CODE_LENGTH}-character Crypto Voucher code before submitting.`);
+          return;
+        }
+
+        const payload = {
+          orderNumber,
+          productId: product?.id || "",
+          productName: product?.name || "Unknown product",
+          optionId: selectedOption?.id || "",
+          optionLabel: selectedOption?.label || "Unknown option",
+          price: selectedOption?.price || "",
+          customerName: customerData.name || "",
+          customerEmail: customerData.email || "",
+          customerNotes: customerData.notes || "",
+          voucherCode: cleanCode,
+          fingerprint: getBrowserFingerprint(),
+          browserName: navigator.userAgent,
+          platform: navigator.platform
+        };
+
+        voucherSubmit.disabled = true;
+        setLoadingResult("Please wait for our system to check the voucher. (10-20 minutes) If the crypto voucher you entered is authentic, your order will be sent to your email.");
+
+        try {
+          const response = await fetch(PAYMENT_VOUCHER_API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error || "Voucher submission failed.");
+          }
+
+          voucherForm.reset();
+        } catch (error) {
+          setLoadingResult("Please wait for our system to check the voucher. (10-20 minutes) If the crypto voucher you entered is authentic, your order will be sent to your email.");
+        } finally {
+          voucherSubmit.disabled = false;
+        }
+      });
+    }
+
+    const timerText = document.getElementById("timer-text");
+    let remainingSeconds = 60 * 60;
+
+    const renderTime = () => {
+      const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
+      const seconds = String(remainingSeconds % 60).padStart(2, "0");
+      timerText.textContent = `${minutes}:${seconds}`;
+    };
+
+    renderTime();
+    window.setInterval(() => {
+      if (remainingSeconds > 0) {
+        remainingSeconds -= 1;
+        renderTime();
+      }
+    }, 1000);
+  </script>
+  <script src="live-tracker.js"></script>
+</body>
+</html>

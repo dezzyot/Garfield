@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccountHub Product</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="bolt.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="product-data.js"></script>
+</head>
+<body data-live-page="product">
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="background-glow" aria-hidden="true"></div>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="navbar">
+        <a class="brand" href="index.html#products">
+          <img class="brand-mark" src="bolt.svg" alt="AccountHub logo">
+          AccountHub
+        </a>
+        <button class="navbar-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button" aria-expanded="false">Products</button>
+            <div class="dropdown-menu">
+              <a href="index.html#processor">Payment Processors</a>
+              <a href="index.html#bank">Bank Accounts</a>
+              <a href="index.html#crypto">Cryptocurrency Accounts</a>
+            </div>
+          </div>
+          <a href="support.html">Support</a>
+          <a href="reviews.html">Reviews</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="intro page-intro">
+        <div class="intro-head">
+          <p class="eyebrow" id="product-section-label">Product</p>
+          <h2 id="product-name">Loading product...</h2>
+        </div>
+        <p class="intro-text" id="product-description">Preparing product details.</p>
+      </section>
+
+      <section class="product-detail-layout">
+        <article class="product-detail-card">
+          <div class="product-detail-hero">
+            <div class="product-media product-detail-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img id="product-image" src="" alt="Product image">
+            </div>
+            <div class="product-detail-meta">
+              <span class="product-tag" id="product-category">Category</span>
+              <p class="product-detail-price" id="product-price">$0</p>
+              <ul class="product-feature-list" id="product-features"></ul>
+            </div>
+          </div>
+        </article>
+
+        <aside class="product-detail-card option-card">
+          <div class="section-label">
+            <h3>Select Account Type</h3>
+          </div>
+          <div class="option-list" id="option-list"></div>
+          <a class="support-button checkout-cta" id="checkout-link" href="checkout.html">Continue To Checkout</a>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2024-2026 AccountHub</p>
+      <a href="support.html">Support Center</a>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const updatePointerGlow = (event) => {
+      root.style.setProperty("--mouse-x", `${event.clientX}px`);
+      root.style.setProperty("--mouse-y", `${event.clientY}px`);
+    };
+    if (window.matchMedia("(pointer: fine)").matches) {
+      window.addEventListener("mousemove", updatePointerGlow);
+      updatePointerGlow({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 3 });
+    }
+
+    const navbar = document.querySelector(".navbar");
+    const navToggle = document.querySelector(".navbar-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const dropdown = document.querySelector(".nav-dropdown");
+    const dropdownTrigger = document.querySelector(".nav-dropdown-trigger");
+    function closeMobileNav() {
+      if (!navbar || !navToggle) return;
+      navbar.classList.remove("nav-mobile-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+    if (navToggle && navbar) {
+      navToggle.addEventListener("click", () => {
+        const isOpen = navbar.classList.toggle("nav-mobile-open");
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+    if (dropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener("click", () => {
+        const isOpen = dropdown.classList.toggle("is-open");
+        dropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+      });
+      document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("is-open");
+          dropdownTrigger.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+    if (navLinks) {
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => closeMobileNav());
+      });
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("product");
+    const product = window.PRODUCT_CATALOG?.[productId];
+
+    const sectionLabel = document.getElementById("product-section-label");
+    const nameNode = document.getElementById("product-name");
+    const descNode = document.getElementById("product-description");
+    const imageNode = document.getElementById("product-image");
+    const categoryNode = document.getElementById("product-category");
+    const priceNode = document.getElementById("product-price");
+    const featureList = document.getElementById("product-features");
+    const optionList = document.getElementById("option-list");
+    const checkoutLink = document.getElementById("checkout-link");
+    let selectedOption = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderOptionLabel(option) {
+      const safeLabel = escapeHtml(option.label || "");
+      if (option.flag === "us") {
+        return `${safeLabel} <img class="flag-badge" src="us-flag.svg" alt="United States flag">`;
+      }
+      if (option.flag === "eu") {
+        return `${safeLabel} <img class="flag-badge" src="eu-flag.svg" alt="European Union flag">`;
+      }
+      if (option.flag === "au") {
+        return `${safeLabel} <img class="flag-badge" src="au-flag.svg" alt="Australia flag">`;
+      }
+      if (option.flag === "uk") {
+        return `${safeLabel} <img class="flag-badge" src="uk-flag.svg" alt="United Kingdom flag">`;
+      }
+      return safeLabel;
+    }
+
+    if (!product) {
+      sectionLabel.textContent = "Not Found";
+      nameNode.textContent = "Product not found";
+      descNode.textContent = "Go back to the catalog and select a valid product.";
+      checkoutLink.style.display = "none";
+    } else {
+      document.title = `${product.name} | AccountHub`;
+      sectionLabel.textContent = product.section;
+      nameNode.textContent = product.name;
+      descNode.textContent = product.detailDescription;
+      imageNode.src = product.image;
+      imageNode.alt = product.name;
+      categoryNode.textContent = product.category;
+      priceNode.textContent = `$${product.basePrice}`;
+
+      product.features.forEach((feature) => {
+        const item = document.createElement("li");
+        item.textContent = feature;
+        featureList.appendChild(item);
+      });
+
+      function updateCheckoutLink() {
+        if (!selectedOption) {
+          checkoutLink.removeAttribute("href");
+          checkoutLink.textContent = "Currently Out Of Stock";
+          checkoutLink.style.opacity = "0.55";
+          checkoutLink.style.pointerEvents = "none";
+          return;
+        }
+        checkoutLink.href = `checkout.html?product=${encodeURIComponent(product.id)}&option=${encodeURIComponent(selectedOption.id)}`;
+        priceNode.textContent = `$${selectedOption.price}`;
+        checkoutLink.textContent = "Continue To Checkout";
+        checkoutLink.style.opacity = "";
+        checkoutLink.style.pointerEvents = "";
+      }
+
+      function renderOptions() {
+        const firstAvailable = product.options.find((option) => Number(option.stock ?? 0) > 0) || null;
+        selectedOption = firstAvailable;
+
+        product.options.forEach((option) => {
+          const quantity = Number(option.stock ?? 0);
+          const isOut = quantity <= 0;
+          const stockLabel = isOut ? "Out Of Stock" : quantity <= 2 ? "Low Stock" : "In Stock";
+          const label = document.createElement("label");
+          label.className = "option-item";
+          if (isOut) {
+            label.classList.add("is-disabled");
+          }
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "account_option";
+          input.value = option.id;
+          input.checked = selectedOption?.id === option.id;
+          input.disabled = isOut;
+
+          const content = document.createElement("div");
+          content.className = "option-item-body";
+          content.innerHTML = `
+            <div class="option-item-top">
+              <strong>${renderOptionLabel(option)}</strong>
+              <span>$${option.price}</span>
+            </div>
+            <p>${option.details}</p>
+            <div class="option-stock ${isOut ? "is-out" : quantity <= 2 ? "is-low" : "is-in"}">${stockLabel}</div>
+          `;
+
+          input.addEventListener("change", () => {
+            if (isOut) return;
+            selectedOption = option;
+            updateCheckoutLink();
+          });
+
+          label.appendChild(input);
+          label.appendChild(content);
+          optionList.appendChild(label);
+        });
+
+        if (!selectedOption) {
+          const status = document.createElement("p");
+          status.className = "product-stock-status";
+          status.textContent = "All account types are currently out of stock.";
+          optionList.insertAdjacentElement("beforebegin", status);
+        }
+
+        updateCheckoutLink();
+      }
+
+      renderOptions();
+    }
+  </script>
+  <script src="live-tracker.js"></script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccountHub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="bolt.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="product-data.js"></script>
+</head>
+<body data-live-page="home">
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="background-glow" aria-hidden="true"></div>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="navbar">
+        <a class="brand" href="index.html#products">
+          <img class="brand-mark" src="bolt.svg" alt="Vault Market logo">
+          AccountHub
+        </a>
+        <button class="navbar-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button" aria-expanded="false">Products</button>
+            <div class="dropdown-menu">
+              <a href="index.html#processor">Payment Processors</a>
+              <a href="index.html#bank">Bank Accounts</a>
+              <a href="index.html#crypto">Cryptocurrency Accounts</a>
+            </div>
+          </div>
+          <a href="support.html">Support</a>
+          <a href="reviews.html">Reviews</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content" id="home">
+      <section class="intro" id="products">
+        <div class="intro-head">
+          <p class="eyebrow">#1 Account Marketplace</p>
+          <h2>Account Hub</h2>
+        </div>
+        <p class="intro-text">
+          Hand made business accounts and bank accounts with 24/7 support.<br>Full refund guaranteed if the account doesn't meet your expectations.
+        </p>
+      </section>
+
+      <section class="products-section" id="processor">
+        <div class="section-label">
+          <h3>Payment Processors</h3>
+        </div>
+        <div class="product-grid">
+          <a class="product-link" href="product.html?product=bank-stripe">
+          <article class="product-card product-card-large">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="stripe-4.svg" alt="Bank account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Payment Processor</span>
+                <span class="product-price">$350 - $490</span>
+              </div>
+              <h2>Stripe</h2>
+              <p>Stripe personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=bank-cashapp">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="cashapp.svg" alt="Competitive Bank account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Payment Processor</span>
+                <span class="product-price">$150 - $250</span>
+              </div>
+              <h2>CashApp</h2>
+              <p>CashApp personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=bank-paypal">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="paypal-3.svg" alt="Rare Bank inventory account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Payment Processor</span>
+                <span class="product-price">$150 - $310</span>
+              </div>
+              <h2>PayPal</h2>
+              <p>PayPal personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+        </div>
+      </section>
+
+      <section class="products-section" id="bank">
+        <div class="section-label">
+          <h3>Bank Accounts</h3>
+        </div>
+        <div class="product-grid">
+          <a class="product-link" href="product.html?product=bank-chime">
+          <article class="product-card product-card-large">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="chime-1.svg" alt="Chime account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Bank</span>
+                <span class="product-price">$120</span>
+              </div>
+              <h2>Chime Account</h2>
+              <p>Chime personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=bank-revolut">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="revolut-1.svg" alt="Revolut account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Bank</span>
+                <span class="product-price">$135</span>
+              </div>
+              <h2>Revolut Account</h2>
+              <p>Revolut personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=bank-wise">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="wise-2.svg" alt="Wise account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Bank</span>
+                <span class="product-price">$140</span>
+              </div>
+              <h2>Wise Account</h2>
+              <p>Wise personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=bank-chase">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="chase.svg" alt="Chase account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Bank</span>
+                <span class="product-price">$145</span>
+              </div>
+              <h2>Chase Account</h2>
+              <p>Chase personal and business accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+        </div>
+      </section>
+
+      <section class="products-section" id="crypto">
+        <div class="section-label">
+          <h3>Cryptocurrency Accounts</h3>
+        </div>
+        <div class="product-grid">
+          <a class="product-link" href="product.html?product=crypto-coinbase">
+          <article class="product-card product-card-large">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="coinbase-1.svg" alt="Coinbase account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Crypto</span>
+                <span class="product-price">$95</span>
+              </div>
+              <h2>Coinbase Account</h2>
+              <p>Coinbase personal accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=crypto-bybit">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="bybit-3.svg" alt="Bybit account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Crypto</span>
+                <span class="product-price">$88</span>
+              </div>
+              <h2>Bybit Account</h2>
+              <p>Bybit personal accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+
+          <a class="product-link" href="product.html?product=crypto-binance">
+          <article class="product-card">
+            <div class="product-media">
+              <div class="particles particles-a" aria-hidden="true"></div>
+              <div class="particles particles-b" aria-hidden="true"></div>
+              <div class="trail" aria-hidden="true"></div>
+              <img src="binance.svg" alt="Binance account product">
+            </div>
+            <div class="product-content">
+              <div class="product-topline">
+                <span class="product-tag">Crypto</span>
+                <span class="product-price">$92</span>
+              </div>
+              <h2>Binance Account</h2>
+              <p>Binance personal accounts, fully verified and ready for use.</p>
+            </div>
+          </article>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <p>&copy; 2024-2026 AccountHub</p>
+      <a href="support.html">Support Center</a>
+    </footer>
+  </div>
+  <script>
+    const root = document.documentElement;
+    const updatePointerGlow = (event) => {
+      root.style.setProperty("--mouse-x", `${event.clientX}px`);
+      root.style.setProperty("--mouse-y", `${event.clientY}px`);
+    };
+
+    if (window.matchMedia("(pointer: fine)").matches) {
+      window.addEventListener("mousemove", updatePointerGlow);
+      updatePointerGlow({
+        clientX: window.innerWidth / 2,
+        clientY: window.innerHeight / 3
+      });
+    }
+
+    const navbar = document.querySelector(".navbar");
+    const navToggle = document.querySelector(".navbar-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const dropdown = document.querySelector(".nav-dropdown");
+    const dropdownTrigger = document.querySelector(".nav-dropdown-trigger");
+    function closeMobileNav() {
+      if (!navbar || !navToggle) return;
+      navbar.classList.remove("nav-mobile-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+
+    if (navToggle && navbar) {
+      navToggle.addEventListener("click", () => {
+        const isOpen = navbar.classList.toggle("nav-mobile-open");
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    if (dropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener("click", () => {
+        const isOpen = dropdown.classList.toggle("is-open");
+        dropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("is-open");
+          dropdownTrigger.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    if (navLinks) {
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          closeMobileNav();
+        });
+      });
+    }
+
+    function productIdFromLink(link) {
+      try {
+        return new URL(link.href).searchParams.get("product");
+      } catch {
+        return null;
+      }
+    }
+
+    function setCardStockState(link) {
+      const productId = productIdFromLink(link);
+      const product = window.PRODUCT_CATALOG?.[productId];
+      if (!product) return;
+
+      const allOut = product.options.every((option) => Number(option.stock ?? 0) <= 0);
+      const card = link.querySelector(".product-card");
+      const price = link.querySelector(".product-price");
+      if (!card || !price) return;
+      const optionPrices = product.options
+        .map((option) => Number(option.price))
+        .filter((value) => Number.isFinite(value));
+      const minPrice = optionPrices.length ? Math.min(...optionPrices) : Number(product.basePrice || 0);
+      const maxPrice = optionPrices.length ? Math.max(...optionPrices) : minPrice;
+      const formattedPrice = minPrice === maxPrice ? `$${minPrice}` : `$${minPrice} - $${maxPrice}`;
+
+      if (!allOut) {
+        card.classList.remove("product-card-out");
+        price.classList.remove("is-out");
+        price.textContent = formattedPrice;
+        return;
+      }
+
+      card.classList.add("product-card-out");
+      price.classList.add("is-out");
+      price.textContent = "Out Of Stock";
+    }
+
+    document.querySelectorAll(".product-link").forEach((link) => {
+      setCardStockState(link);
+    });
+  </script>
+  <script src="live-tracker.js"></script>
+</body>
+</html>

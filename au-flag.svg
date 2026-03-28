@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 13" role="img" aria-label="Australia flag">
+  <rect width="19" height="13" rx="2" fill="#012169"/>
+  <g transform="scale(.43)">
+    <path d="M0 0h22v14H0z" fill="#012169"/>
+    <path d="M0 0l22 14M22 0L0 14" stroke="#fff" stroke-width="3"/>
+    <path d="M0 0l22 14M22 0L0 14" stroke="#c8102e" stroke-width="1.6"/>
+    <path d="M11 0v14M0 7h22" stroke="#fff" stroke-width="5"/>
+    <path d="M11 0v14M0 7h22" stroke="#c8102e" stroke-width="3"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="13.8" cy="3.1" r=".9"/>
+    <circle cx="15.8" cy="5.4" r=".55"/>
+    <circle cx="14.6" cy="7.7" r=".7"/>
+    <circle cx="12.6" cy="9.5" r=".55"/>
+    <circle cx="17" cy="8.7" r=".85"/>
+    <circle cx="6.4" cy="9.4" r="1.05"/>
+  </g>
+</svg>
