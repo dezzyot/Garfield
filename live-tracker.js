@@ -1,4 +1,4 @@
-const LIVE_TRACKER_API_URL = "http://127.0.0.1:8080/api/live-heartbeat";
+const LIVE_TRACKER_API_URL = "https://api.accounthub.shop/api/live-heartbeat";
 const LIVE_TRACKER_INTERVAL_MS = 20000;
 
 function getLiveTrackerFingerprint() {
